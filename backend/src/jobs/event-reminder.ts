@@ -28,6 +28,7 @@ export function startEventReminderJob(io: Server): void {
           { _id: event._id },
           { reminderSentAt: new Date() }
         );
+        console.log("Event reminder sent to patient:", patientId);
       }
     } catch (err) {
       console.error("Event reminder job error:", err);
