@@ -70,10 +70,20 @@ router.post("/login", async (req: Request, res: Response) => {
       type: type as UserType,
     };
 
-    return res.json({
-      success: true,
-      message: "Login successful",
-      user: req.session.user,
+    // Save session before sending response so Set-Cookie is included (required behind proxy / cross-subdomain)
+    req.session.save((err) => {
+      if (err) {
+        console.error("Session save error:", err);
+        return res.status(500).json({
+          success: false,
+          message: "An error occurred during login",
+        });
+      }
+      return res.json({
+        success: true,
+        message: "Login successful",
+        user: req.session.user,
+      });
     });
   } catch (err) {
     console.error("Login error:", err);

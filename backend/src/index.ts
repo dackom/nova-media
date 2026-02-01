@@ -31,6 +31,8 @@ const MONGODB_URI =
 const SESSION_SECRET =
   process.env.SESSION_SECRET ?? "dev-secret-change-in-production";
 
+// Required when behind a reverse proxy (e.g. Coolify) so req.secure and cookies work correctly
+app.set("trust proxy", 1);
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json());
 
