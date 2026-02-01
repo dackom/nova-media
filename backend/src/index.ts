@@ -19,6 +19,8 @@ import { startEventReminderJob } from "./jobs/event-reminder.js";
 const app = express();
 const httpServer = createServer(app);
 const CORS_ORIGIN = process.env.CORS_ORIGIN ?? "http://localhost:5173";
+/** Set to e.g. ".loudvibe.com" in production so the session cookie is shared across subdomains (frontend + backend). */
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN ?? undefined;
 const io = new Server(httpServer, {
   cors: { origin: CORS_ORIGIN, credentials: true },
 });
@@ -59,6 +61,7 @@ async function main() {
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+          ...(COOKIE_DOMAIN && { domain: COOKIE_DOMAIN }),
         },
       })
     );
@@ -74,6 +77,7 @@ async function main() {
           secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           maxAge: 7 * 24 * 60 * 60 * 1000,
+          ...(COOKIE_DOMAIN && { domain: COOKIE_DOMAIN }),
         },
       })
     );

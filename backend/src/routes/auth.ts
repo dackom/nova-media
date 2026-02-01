@@ -110,11 +110,20 @@ router.post("/logout", (req: Request, res: Response) => {
         message: "Logout failed",
       });
     }
-    res.clearCookie("nova.sid", {
+    const cookieOptions: {
+      httpOnly: boolean;
+      sameSite: "lax";
+      secure: boolean;
+      domain?: string;
+    } = {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-    });
+    };
+    if (process.env.COOKIE_DOMAIN) {
+      cookieOptions.domain = process.env.COOKIE_DOMAIN;
+    }
+    res.clearCookie("nova.sid", cookieOptions);
     return res.json({ success: true, message: "Logged out" });
   });
 });
